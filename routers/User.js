@@ -58,7 +58,8 @@ router.post("/login",async(req,res) => {
      return res.status(400).send('wrong password');
     
      const token = jwt.sign({_id:user.id},'secret');
-     res.header("auth-token",token).send(token);
+     res.send("Login sucess");
+    //  res.header("auth-token",token).send(token);
 })
 
 router.get("/Users",async(req,res)=>
