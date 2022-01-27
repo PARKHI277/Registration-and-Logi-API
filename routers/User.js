@@ -55,11 +55,15 @@ router.post("/login",async(req,res) => {
     //password is correct
     const validpass = await bcrypt.compare(req.body.password,user.password);
     if(!validpass)
+    {
      return res.status(400).send('wrong password');
-    
-     const token = jwt.sign({_id:user.id},'secret');
+    }
+    else
+    { 
      res.send("Login sucess");
-    //  res.header("auth-token",token).send(token);
+     const token = jwt.sign({_id:user.id},'secret');
+     res.header("auth-token",token).send(token);
+    }
 })
 
 router.get("/Users",async(req,res)=>
