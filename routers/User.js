@@ -8,7 +8,7 @@ var checkauth = require('../routers/verifytoken');
  dotenv.config();
 
 
- router.post("/Users",async(req,res)=>
+ router.post("/register",async(req,res)=>
 {      
     //check email exixt
     const  emailExist = await User.findOne({email: req.body.email});
@@ -66,7 +66,7 @@ router.post("/login",async(req,res) => {
     }
 })
 
-router.get("/Users",async(req,res)=>
+router.get("/register",async(req,res)=>
 {
      try{
          const Usersdata = await User.find();

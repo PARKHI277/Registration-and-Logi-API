@@ -37,7 +37,8 @@ const UserSchema = new mongoose.Schema({
         required:true,
         max:255,
         min:6,
-        unique:true
+        unique:true,
+        lowercase:true
 
     }
     
