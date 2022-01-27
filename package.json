@@ -1,24 +1,33 @@
 {
-  "name": "major-project",
+  "name": "registration-and-logi-api",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
   },
-  "author": "parkhi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PARKHI277/Registration-and-Logi-API.git"
+  },
+  "keywords": [],
+  "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PARKHI277/Registration-and-Logi-API/issues"
+  },
+  "homepage": "https://github.com/PARKHI277/Registration-and-Logi-API#readme",
   "dependencies": {
-    
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.1",
-    "dotenv": "^14.3.0",
+    "cookies": "^0.8.0",
+    "cookies-parser": "^1.2.0",
+    "dotenv": "^14.3.2",
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.8",
     "nodemailer": "^6.7.2",
-      "router": "^1.3.6"
-  },
-  "devDependencies": {},
-  "keywords": [],
-  "description": ""
+    "router": "^1.3.6"
+  }
 }
