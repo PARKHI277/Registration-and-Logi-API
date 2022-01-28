@@ -81,6 +81,16 @@ router.get("/register",async(req,res)=>
      }
 })
 
+router.get("/login",async(req,res)=>
+{
+    try{
+        const userdetail = await User.find();
+        res.send(userdetail);
+          }catch(err)
+          {
+          res.status(400).send(err); 
+          }
+})
 router.get('/signup', (req,res) => {
     if (req.query.phonenumber) {
        client
@@ -100,8 +110,9 @@ router.get('/signup', (req,res) => {
      } 
   })
   
+  
   router.get('/verify', (req, res) => {
-    if (req.query.phonenumber && (req.query.code).length === 6) {
+    if (req.query.phonenumber && req.query.code) {
         client
             .verify
             .services(process.env.TWILIO_SERVICE_SID)
