@@ -1,21 +1,19 @@
+require('dotenv').config();
 const express = require('express');
-const port = process.env.PORT || 3000;
+const cors = require('cors');
 require("./src/db/conn");
 const UserRouter = require("./routers/User")
 
-
-const dotenv = require('dotenv');
-
-dotenv.config();
 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
-
+//middlewares
 app.use("/api/users",UserRouter);
 
-console.log(process.env.TWILIO_SERVICE_SID);
+const  port = process.env.PORT || 3000;
 
 app.listen(port,()=>
 {

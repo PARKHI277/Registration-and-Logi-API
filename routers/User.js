@@ -1,14 +1,27 @@
+require('dotenv').config();
+
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const router = new express.Router();
 const User = require("../src/models/Users");
 const jwt = require('jsonwebtoken');
+const {auth}= require('../routers/verifytoken');
 
-var checkauth = require('../routers/verifytoken');
- const dotenv = require('dotenv'); 
- dotenv.config();
+const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
+const cookieparser = require("cookie-parser");
 
- const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
+
+//middeleware
+router.use(cookieparser());
+
+//jwt
+
+const maxAge = 3*24*60*60;
+const createtoken = (id) => {
+    return jwt.sign({id},'secret',{
+        expiresIn:maxAge
+    });
+}
 
  router.post("/register",async(req,res)=>
 {      
@@ -16,6 +29,7 @@ var checkauth = require('../routers/verifytoken');
     const  emailExist = await User.findOne({email: req.body.email});
     if(emailExist) return res.status(400).send('Email already exixts');
     
+    const plainpassword = req.body.password;
     const userpassword = req.body.password;
     const strongPasswords = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
     if(strongPasswords.test(userpassword))
@@ -32,13 +46,15 @@ var checkauth = require('../routers/verifytoken');
         phone:req.body.phone
       } 
        );
-       const token = jwt.sign({_id:user.id},'secret');
-   user.save().then(()=>
+    //    const token = jwt.sign({_id:user.id},'secret');
+    const token = createtoken(user._id);
+    res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});
+    user.save().then(()=>
    {  
        res.status(201).send({
          user:user._id,
          message : "User registered succesfully",
-         password:hashPassword,
+         password:plainpassword,
          token:token
         });
    }).catch((e)=>{
@@ -64,9 +80,10 @@ router.post("/login",async(req,res) => {
     }
     else
     { 
-     res.send("Login sucess");
-    //  const token = jwt.sign({_id:user.id},'secret');
-    //  res.header("auth-token",token).send(token);
+        //  res.send("Login sucess");    
+         const token = createtoken(user._id);
+         res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});
+         res.status(200).send({user:user._id});
     }
 })
 
@@ -127,6 +144,11 @@ router.get('/signup', (req,res) => {
    } else {
        res.status(400).send("Invalid otp")
     }
+  })
+
+  router.get("/logout",async(req,res)=>{
+      res.cookie('jwt','',{maxAge:1});
+      res.redirect('/login');
   })
   
 
