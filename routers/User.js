@@ -82,31 +82,41 @@ router.get("/register",async(req,res)=>
 })
 
 router.get('/signup', (req,res) => {
-    client
-    .verify
-    .services(process.env.TWILIO_SERVICE_ID)
-    .verifications
-    .create({
-        to: process.env.NUMBER,
-        channel:req.query.channel
-    })
-    .then(data => {
-        res.status(200).send(data);
-    })
-})
-
-router.get('/verify', (req, res) => {
- 
-     client
-         .verify
-         .services(process.env.TWILIO_SERVICE_ID)
-         .verificationChecks
-         .create({
-             to: process.env.NUMBER,
-             code: req.query.code
-         })
-         .then(data => {
+    if (req.query.phonenumber) {
+       client
+       .verify
+       .services(process.env.TWILIO_SERVICE_SID)
+       .verifications
+       .create({
+           to: `+${req.query.phonenumber}`,
+           channel: req.query.channel
+       })
+       .then(data => {
            res.status(200).send(data);
        })
-    })
+      }
+       else {
+        res.status(400).send("wrong phone number")
+     } 
+  })
+  
+  router.get('/verify', (req, res) => {
+    if (req.query.phonenumber && (req.query.code).length === 6) {
+        client
+            .verify
+            .services(process.env.TWILIO_SERVICE_SID)
+            .verificationChecks
+            .create({
+                to: `+${req.query.phonenumber}`,
+                code: req.query.code
+            })
+            .then(data => {
+              res.status(200).send(data);
+          }) 
+   } else {
+       res.status(400).send("Invalid otp")
+    }
+  })
+  
+
 module.exports = router;
