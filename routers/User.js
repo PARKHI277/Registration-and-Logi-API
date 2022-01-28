@@ -84,30 +84,29 @@ router.get("/register",async(req,res)=>
 router.get('/signup', (req,res) => {
     client
     .verify
-    .services(process.env.TWILIO_SERVICE_SID)
+    .services(process.env.TWILIO_SERVICE_ID)
     .verifications
     .create({
         to: process.env.NUMBER,
-        channel: req.query.channel
+        channel:req.query.channel
     })
     .then(data => {
         res.status(200).send(data);
-    }) 
+    })
 })
 
 router.get('/verify', (req, res) => {
-  
-    client
-        .verify
-        .services(process.env.TWILIO_SERVICE_ID)
-        .verificationChecks
-        .create({
-            to: process.env.NUMBER,
-            code: req.query.code
-        })
-        .then(data => {
-          res.status(200).send(data);
-      })
-})
+ 
+     client
+         .verify
+         .services(process.env.TWILIO_SERVICE_ID)
+         .verificationChecks
+         .create({
+             to: process.env.NUMBER,
+             code: req.query.code
+         })
+         .then(data => {
+           res.status(200).send(data);
+       })
+    })
 module.exports = router;
-
