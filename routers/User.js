@@ -3,10 +3,12 @@ const bcrypt = require('bcryptjs');
 const router = new express.Router();
 const User = require("../src/models/Users");
 const jwt = require('jsonwebtoken');
+
 var checkauth = require('../routers/verifytoken');
  const dotenv = require('dotenv'); 
  dotenv.config();
 
+ const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
 
  router.post("/register",async(req,res)=>
 {      
@@ -30,12 +32,14 @@ var checkauth = require('../routers/verifytoken');
         phone:req.body.phone
       } 
        );
+       const token = jwt.sign({_id:user.id},'secret');
    user.save().then(()=>
    {  
        res.status(201).send({
          user:user._id,
          message : "User registered succesfully",
-         password:hashPassword
+         password:hashPassword,
+         token:token
         });
    }).catch((e)=>{
        res.status(400).send(e);
@@ -61,8 +65,8 @@ router.post("/login",async(req,res) => {
     else
     { 
      res.send("Login sucess");
-     const token = jwt.sign({_id:user.id},'secret');
-     res.header("auth-token",token).send(token);
+    //  const token = jwt.sign({_id:user.id},'secret');
+    //  res.header("auth-token",token).send(token);
     }
 })
 
@@ -75,6 +79,35 @@ router.get("/register",async(req,res)=>
      {
       res.send(e);
      }
+})
+
+router.get('/signup', (req,res) => {
+    client
+    .verify
+    .services(process.env.TWILIO_SERVICE_SID)
+    .verifications
+    .create({
+        to: process.env.NUMBER,
+        channel: req.query.channel
+    })
+    .then(data => {
+        res.status(200).send(data);
+    }) 
+})
+
+router.get('/verify', (req, res) => {
+  
+    client
+        .verify
+        .services(process.env.TWILIO_SERVICE_ID)
+        .verificationChecks
+        .create({
+            to: process.env.NUMBER,
+            code: req.query.code
+        })
+        .then(data => {
+          res.status(200).send(data);
+      })
 })
 module.exports = router;
 
