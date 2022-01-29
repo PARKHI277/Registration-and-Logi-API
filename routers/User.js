@@ -81,10 +81,10 @@ router.post("/login",async(req,res) => {
     }
     else
     { 
-         res.status(200).send("Login sucess");    
+         res.send("Login sucess");    
         //  const token = createtoken(user._id);
         //  res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});
-        //  res.status(200).send({user:user._id});
+         res.status(200).send({user:user._id});
     }
 })
 
@@ -149,8 +149,7 @@ router.get('/signup', (req,res) => {
     }
   })
 
-  //Forgot password route
-  app.get('/forget-password')
+  //Forgot password rout
 
     router.get("/logout",async(req,res)=>{
         // res.cookie('jwt','',{maxAge:1});
