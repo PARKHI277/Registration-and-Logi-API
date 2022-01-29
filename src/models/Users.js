@@ -41,11 +41,11 @@ const UserSchema = new mongoose.Schema({
         lowercase:true
 
     },
-    token:
-    {
-        type:String,
-        reqired:true,
-    }
+    // token:
+    // {
+    //     type:String,
+    //     reqired:true,
+    // }
     
     
 });

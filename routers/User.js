@@ -17,12 +17,12 @@ router.use(cookieparser());
 
 //jwt
 
-const maxAge = 3*24*60*60;
-const createtoken = (id) => {
-    return jwt.sign({id},'secret',{
-        expiresIn:maxAge
-    });
-}
+// const maxAge = 3*24*60*60;
+// const createtoken = (id) => {
+//     return jwt.sign({id},'secret',{
+//         expiresIn:maxAge
+//     });
+// }
 
  router.post("/register",async(req,res)=>
 {      
@@ -64,7 +64,7 @@ const createtoken = (id) => {
 }
 else
 {
-    res.send("Weak password");
+    res.send("Please enter strong password");
 }
 
 
@@ -109,6 +109,8 @@ router.get("/login",async(req,res)=>
           res.status(400).send(err); 
           }
 })
+
+//otp generate
 router.get('/signup', (req,res) => {
     if (req.query.phonenumber) {
        client
@@ -128,7 +130,7 @@ router.get('/signup', (req,res) => {
      } 
   })
   
-  
+  //otp verify
   router.get('/verify', (req, res) => {
     if (req.query.phonenumber && req.query.code) {
         client
@@ -147,11 +149,7 @@ router.get('/signup', (req,res) => {
     }
   })
 
-  router.get("/logout",async(req,res)=>{
-      res.cookie('jwt','',{maxAge:1});
-      res.redirect('/login');
-  })
-  
+  //Forgot password route
   router.post("/forgotpassword",async(req,res) =>
   {
        try{
@@ -193,4 +191,9 @@ router.get('/signup', (req,res) => {
 
 
     });
+
+    router.get("/logout",async(req,res)=>{
+        // res.cookie('jwt','',{maxAge:1});
+        res.redirect('/login');
+    })
 module.exports = router;
