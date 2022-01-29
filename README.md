@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-User Registration api : registrationloginapi.herokuapp.com/api/users/register
 
-User Login api : registrationloginapi.herokuapp.com/api/users/login
-
-=======
 User Regisration api : registrationloginapi.herokuapp.com/api/users/register
 
 
 User login api : registrationloginapi.herokuapp.com/api/users/login
->>>>>>> origin
+
+Signup otp generation api : https://registrationloginapi.herokuapp.com/api/users/signup?phonenumber=917668043605&channel=sms
