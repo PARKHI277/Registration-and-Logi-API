@@ -48,15 +48,15 @@ const createtoken = (id) => {
       } 
        );
     //    const token = jwt.sign({_id:user.id},'secret');
-    const token = createtoken(user._id);
-    res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});
+    // const token = createtoken(user._id);
+    // res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});
     user.save().then(()=>
    {  
        res.status(201).send({
          user:user._id,
          message : "User registered succesfully",
          password:plainpassword,
-         token:token
+        //  token:token
         });
    }).catch((e)=>{
        res.status(400).send(e);
@@ -81,9 +81,9 @@ router.post("/login",async(req,res) => {
     }
     else
     { 
-        //  res.send("Login sucess");    
-         const token = createtoken(user._id);
-         res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});
+         res.send("Login sucess");    
+        //  const token = createtoken(user._id);
+        //  res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});
          res.status(200).send({user:user._id});
     }
 })
