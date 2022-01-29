@@ -9,6 +9,7 @@ const {auth}= require('../routers/verifytoken');
 
 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
 const cookieparser = require("cookie-parser");
+const nodemailer = require('nodemailer');
 
 
 //middeleware
@@ -151,5 +152,45 @@ router.get('/signup', (req,res) => {
       res.redirect('/login');
   })
   
+  router.post("/forgotpassword",async(req,res) =>
+  {
+       try{
+        const userexixt = await User.findOne({email: req.body.email});
+        if(!userexixt)
+            return res.send("User is not registred");
 
+        const isVerified = userexixt.isVerified;
+        if(!isVerified)
+           return res.send("Not a verified user");
+
+           const transporter = nodemailer.createTransport({
+               service:"gmail",
+               auth:{
+                   user:process.env.EMAIL_ID,
+                   pass:process.env.PASSWORD
+               }
+           });
+
+           const mailoption = {
+               from:process.env.EMAIL_ID,
+               to:userexixt.email,
+               subject:"Your password is",
+               text:userexixt.plainpassword
+           };
+
+           transporter.sendMail(mailoption,function(error,info){
+               if(error){
+                 console.log(error);
+               }
+               else
+               {
+                   console.log("Password sent:" + info.response);
+               }
+           });
+           res.send("Password sent");
+
+       }catch(err){console.log(err)};
+
+
+    });
 module.exports = router;
