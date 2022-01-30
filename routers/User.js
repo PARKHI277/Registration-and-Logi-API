@@ -10,6 +10,7 @@ const {auth}= require('../routers/verifytoken');
 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
 const cookieparser = require("cookie-parser");
 const nodemailer = require('nodemailer');
+const { YesterdayInstance } = require('twilio/lib/rest/api/v2010/account/usage/record/yesterday');
 
 
 //middeleware
@@ -136,7 +137,7 @@ router.get('/signup', (req,res) => {
   })
   
   //otp verify
-  router.get('/verify', (req, res) => {
+router.get('/verify', (req, res) => {
     if (req.query.phonenumber && req.query.code) {
         client
             .verify
@@ -154,42 +155,86 @@ router.get('/signup', (req,res) => {
        res.status(400).send("Invalid otp")
     }
   })
+
+// router.get('/forgot-password',(req,res,next) =>
+//   {
+//      res.send("Password has been lost");
+//   })
   
-  const JWT_SECRET = 'super secret';
-  //Forgot password router
-  router.post('/forgot-password',async(req,res,next) =>
-  {
-    const user = await User.findOne({email: req.body.email});
-    if(!user)  
-    {return res.status(400).send("This email is not registred");
-  }
+//   const JWT_SECRET = 'super secret';
+
+//   //Forgot password router
+// router.post('/forgot-password',async(req,res,next) =>
+  
+//   {
+//       try{
+//     const user = await User.findOne({email: req.body.email});
+//     if(!user)  
+//     {return res.status(400).send("This email is not registred");
+//   }
     
-  const secret  = JWT_SECRET + user.password;
-  const payload = {
-      email:user.email,
-      id: user._id
-  }
-  const token = jwt.sign(payload,secret,{expiresIn:'15m'})
-  const link  = 'http://localhost:3000/reset-password/${user._id}/${token}'
-  console.log(link);
-  res.send("Password reset link has been sent to ur email...")
+//   const secret  = JWT_SECRET + user.password;
+//   const payload = {
+//       email:user.email,
+//       id: user._id
+//   }
+//   const token = jwt.sign(payload,secret,{expiresIn:'15m'})
+//   const link  = `http://localhost:3000/api/users/reset-password/${user._id}/${token}`;
+//   console.log(link);
+//   res.send("Password reset link has been sent to ur email...")
 
-  })
+//       }catch(err)
+//       {
+//           res.status(400).send("User has been enterd invalid details");
+//       }
+// })
 
-  router.get('/forgot-password',(req,res,next) =>
-  {
-      res.render('forgot-password');
-  })
+// router.get('/reset-password:id/:token',async(req,res,next) =>
+//   {   
+//       const id = req.params.id;
+//       const usertoken = req.params.token;
+//       const user = await User.findOne({_id:id});
+//       if(!user)
+//       {
+//           return res.send('Invalid email');
+//       }
+//       const secret = JWT_SECRET + user.password;
+//       try{
+//           const payload = jwt.verify(token,secret);
+//           res.send("Please enter your email to reset your password")
 
-  router.get('/reset-password',(req,res,next) =>
-  {
-      
-  })
+//       }catch(error){
+//           console.log(error.message);
+//           res.send(error.message);
 
-  router.get('/reset-password',(req,res,next) =>
-  {
-      
-  })
+//       }
+
+//   })
+
+//   router.post('/reset-password/:id/:token',async(req,res,next) =>
+//   {
+//     const id = req.params.id;
+//     const usertoken = req.params.token;
+
+//     const user = await User.findOne({_id:id});
+//     const password = req.body;
+//     if(!user)
+//     {
+//         return res.send('Invalid email');
+//     }
+
+//     const secret = JWT_SECRET + user.password;
+//     try{
+//           const payload  = jwt.verify(token,secret);
+//           // hashing of password
+//           user.password  = password
+//           res.send(user);
+
+//     }catch(error){
+//        console.log(error.message);
+//        res.send(error.message);
+//     }
+//   })
 
     router.get("/logout",async(req,res)=>{
         // res.cookie('jwt','',{maxAge:1});
