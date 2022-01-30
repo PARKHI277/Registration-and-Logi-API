@@ -41,12 +41,33 @@ const UserSchema = new mongoose.Schema({
         lowercase:true
 
     },
-    // token:
-    // {
+    // year:{
+    //     type:Number,
+    //     required:true,
+    //     min:1,
+    //     max:2
+    // },
+    // branch:{
     //     type:String,
-    //     reqired:true,
-    // }
-    
+    //     required:true
+    // },
+    gen:{
+        type:String,
+        required:true
+    },
+    isverified:{
+        "type": "boolean"
+    },
+    plainpassword:{
+        type:String,
+        
+    },
+    otpuser:
+    {
+        type:String
+        
+    }
+
     
 });
 

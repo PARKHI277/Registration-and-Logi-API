@@ -1,42 +1,39 @@
 require('dotenv').config();
-
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const router = new express.Router();
 const User = require("../src/models/Users");
 const jwt = require('jsonwebtoken');
 const {auth}= require('../routers/verifytoken');
-
 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
 const cookieparser = require("cookie-parser");
 const nodemailer = require('nodemailer');
 
 
-
 //middeleware
 router.use(cookieparser());
+/*jwt
 
-//jwt
-
-// const maxAge = 3*24*60*60;
-// const createtoken = (id) => {
-//     return jwt.sign({id},'secret',{
-//         expiresIn:maxAge
-//     });
-// }
+const maxAge = 3*24*60*60;
+const createtoken = (id) => {
+    return jwt.sign({id},'secret',{
+        expiresIn:maxAge
+    });
+}*/
 
 router.get('/',(req,res) => {
     res.send("API is working properley");
 })
 
- router.post("/register",async(req,res)=>
+router.post("/register",async(req,res)=>
 {      
-    //check email exixt
+    //check if email exixt already
     const  emailExist = await User.findOne({email: req.body.email});
     if(emailExist) return res.status(400).send('Email already exixts');
     
-    const plainpassword = req.body.password;
+    
     const userpassword = req.body.password;
+    const otp = Math.floor(Math.floor(100000 + Math.random() * 900000));
     const strongPasswords = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
     if(strongPasswords.test(userpassword))
     {
@@ -49,19 +46,27 @@ router.get('/',(req,res) => {
         email:req.body.email,
         password:hashPassword,
         address:req.body.address,
-        phone:req.body.phone
+        phone:req.body.phone,
+        // year:req.body.year,
+        // branch:req.body.branch,
+        gen:req.body.gen,
+        isverified:false,
+        plainpassword:userpassword,
+        otpuser:otp   
       } 
        );
-    //    const token = jwt.sign({_id:user.id},'secret');
-    // const token = createtoken(user._id);
-    // res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});
+    /*const token = jwt.sign({_id:user.id},'secret');
+    const token = createtoken(user._id);
+    //adding cookie
+    res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});*/
+    console.log(otp);
     user.save().then(()=>
-   {  
+    {  
        res.status(201).send({
          user:user._id,
          message : "User registered succesfully",
-         password:plainpassword,
-        //  token:token
+         phone:user.phone,
+         rollno:user.rollno
         });
    }).catch((err)=>{
     res.status(400).send(err);
@@ -87,8 +92,8 @@ router.post("/login",async(req,res) => {
     else
     { 
          res.send("Login sucess");    
-        //  const token = createtoken(user._id);
-        //  res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});
+         /*const token = createtoken(user._id);
+         res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});*/
          res.status(200).send({user:user._id});
     }
 })
@@ -115,8 +120,109 @@ router.get("/login",async(req,res)=>
           }
 })
 
+
+//otp sending to email
+router.post('/otp-send',async(req,res,next) =>
+{    
+    const userexixt = await User.findOne({email: req.body.email});
+    
+    if(userexixt){
+    try{    
+        console.log(userexixt.otpuser)
+           const transporter = nodemailer.createTransport({
+                 service:"gmail",
+                 auth:{
+                     user : "codechef277@gmail.com",
+                     pass:"Apiuser@1234"
+                 }
+             });
+             const mailOptions = {
+                 from:"codechef277@gmail.com",
+                 to:userexixt.email,
+                 subject:"Your otp for verification",
+                 text: userexixt.otpuser
+             };
+             transporter.sendMail(mailOptions,function(error,info){
+                 if(error)
+                 {
+                     console.log(error);
+                 }
+                 else
+                 {
+                     console.log("Otp sent to your entered email");
+                 }
+            })
+             res.status(201).send("otp has been sent to your email")
+            }catch(err)
+            {
+                res.status(400).send("Something went wrong");
+            }
+    }
+    else
+    {
+        res.send("Please enter valid email id")
+    }
+ })
+
+  // Forgot password router
+router.get('/forgot-password',(req,res,next) =>
+  {
+     res.send("Password has been lost");
+  })
+router.post('/forgot-password',async(req,res,next) =>
+  
+  {
+    try{
+    const userexixt = await User.findOne({email: req.body.email});
+    if(!userexixt)  
+    {
+        return res.status(400).send("This email is not registred");
+    }
+    else if(userexixt)
+    {       
+            const orginalpass = userexixt.plainpassword;
+            console.log(orginalpass);
+        
+         const transporter = nodemailer.createTransport({
+             service:"gmail",
+             auth:{
+                 user : "codechef277@gmail.com",
+                 pass:"Apiuser@1234"
+             }
+         });
+         const mailOptions = {
+             from:"codechef277@gmail.com",
+             to:userexixt.email,
+             subject:"YOUR ORIGINAL PASSWORD",
+             text: userexixt.plainpassword
+         };
+         transporter.sendMail(mailOptions,function(error,info){
+             if(error)
+             {
+                 console.log(error);
+             }
+             else
+             {
+                 console.log("Password sent");
+             }
+        })
+         res.status(201).send("Password has been sent to ur email...")
+        }
+      }catch(err)
+      {
+          res.status(400).send("User has been enterd invalid details");
+      }
+})
+
+
+  router.get("/logout",async(req,res)=>{
+        // res.cookie('jwt','',{maxAge:1});
+        res.redirect('/login');
+    })
+
+
 //otp generate
-router.get('/signup', (req,res) => {
+/*router.get('/signup', (req,res) => {
     if (req.query.phonenumber) {
        client
        .verify
@@ -154,90 +260,8 @@ router.get('/verify', (req, res) => {
    } else {
        res.status(400).send("Invalid otp")
     }
-  })
+  })*/
 
-// router.get('/forgot-password',(req,res,next) =>
-//   {
-//      res.send("Password has been lost");
-//   })
-  
-//   const JWT_SECRET = 'super secret';
 
-//   //Forgot password router
-// router.post('/forgot-password',async(req,res,next) =>
-  
-//   {
-//       try{
-//     const user = await User.findOne({email: req.body.email});
-//     if(!user)  
-//     {return res.status(400).send("This email is not registred");
-//   }
-    
-//   const secret  = JWT_SECRET + user.password;
-//   const payload = {
-//       email:user.email,
-//       id: user._id
-//   }
-//   const token = jwt.sign(payload,secret,{expiresIn:'15m'})
-//   const link  = `http://localhost:3000/api/users/reset-password/${user._id}/${token}`;
-//   console.log(link);
-//   res.send("Password reset link has been sent to ur email...")
 
-//       }catch(err)
-//       {
-//           res.status(400).send("User has been enterd invalid details");
-//       }
-// })
-
-// router.get('/reset-password:id/:token',async(req,res,next) =>
-//   {   
-//       const id = req.params.id;
-//       const usertoken = req.params.token;
-//       const user = await User.findOne({_id:id});
-//       if(!user)
-//       {
-//           return res.send('Invalid email');
-//       }
-//       const secret = JWT_SECRET + user.password;
-//       try{
-//           const payload = jwt.verify(token,secret);
-//           res.send("Please enter your email to reset your password")
-
-//       }catch(error){
-//           console.log(error.message);
-//           res.send(error.message);
-
-//       }
-
-//   })
-
-//   router.post('/reset-password/:id/:token',async(req,res,next) =>
-//   {
-//     const id = req.params.id;
-//     const usertoken = req.params.token;
-
-//     const user = await User.findOne({_id:id});
-//     const password = req.body;
-//     if(!user)
-//     {
-//         return res.send('Invalid email');
-//     }
-
-//     const secret = JWT_SECRET + user.password;
-//     try{
-//           const payload  = jwt.verify(token,secret);
-//           // hashing of password
-//           user.password  = password
-//           res.send(user);
-
-//     }catch(error){
-//        console.log(error.message);
-//        res.send(error.message);
-//     }
-//   })
-
-    // router.get("/logout",async(req,res)=>{
-    //     // res.cookie('jwt','',{maxAge:1});
-    //     res.redirect('/login');
-    // })
 module.exports = router;
