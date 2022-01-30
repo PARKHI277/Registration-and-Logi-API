@@ -10,7 +10,7 @@ const {auth}= require('../routers/verifytoken');
 const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
 const cookieparser = require("cookie-parser");
 const nodemailer = require('nodemailer');
-const { YesterdayInstance } = require('twilio/lib/rest/api/v2010/account/usage/record/yesterday');
+
 
 
 //middeleware
@@ -127,8 +127,8 @@ router.get('/signup', (req,res) => {
            channel: req.query.channel
        })
        .then(data => {
-        //    res.status(200).send(data);
-           res.status(200).send('otp has been set to ur phonenumber');
+           res.status(200).send(data);
+        //    res.status(200).send('otp has been set to ur phonenumber');
        })
       }
        else {
@@ -148,8 +148,8 @@ router.get('/verify', (req, res) => {
                 code: req.query.code
             })
             .then(data => {
-            //   res.status(200).send(data);
-              res.status(200).send('otp verified');
+              res.status(200).send(data);
+            //   res.status(200).send('otp verified');
           }) 
    } else {
        res.status(400).send("Invalid otp")
@@ -236,8 +236,8 @@ router.get('/verify', (req, res) => {
 //     }
 //   })
 
-    router.get("/logout",async(req,res)=>{
-        // res.cookie('jwt','',{maxAge:1});
-        res.redirect('/login');
-    })
+    // router.get("/logout",async(req,res)=>{
+    //     // res.cookie('jwt','',{maxAge:1});
+    //     res.redirect('/login');
+    // })
 module.exports = router;
