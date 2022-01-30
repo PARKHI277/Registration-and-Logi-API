@@ -157,7 +157,7 @@ router.get('/signup', (req,res) => {
   
   const JWT_SECRET = 'super secret';
   //Forgot password router
-  router.post('/forgot-password',(req,res,next) =>
+  router.post('/forgot-password',async(req,res,next) =>
   {
     const user = await User.findOne({email: req.body.email});
     if(!user)  
