@@ -126,7 +126,8 @@ router.get('/signup', (req,res) => {
            channel: req.query.channel
        })
        .then(data => {
-           res.status(200).send(data);
+        //    res.status(200).send(data);
+           res.status(200).send('otp has been set to ur phonenumber');
        })
       }
        else {
@@ -146,40 +147,49 @@ router.get('/signup', (req,res) => {
                 code: req.query.code
             })
             .then(data => {
-              res.status(200).send(data);
+            //   res.status(200).send(data);
+              res.status(200).send('otp verified');
           }) 
    } else {
        res.status(400).send("Invalid otp")
     }
   })
   
-//   const JWT_SECRET = 'secret';
-//   //Forgot password router
-//   router.post('/forgot-password',(req,res,next) =>
-//   {
-//     const user = await User.findOne({email: req.body.email});
-//     if(!user)  
-//     {return res.status(400).send("This email is not registred");
-//   }
+  const JWT_SECRET = 'super secret';
+  //Forgot password router
+  router.post('/forgot-password',(req,res,next) =>
+  {
+    const user = await User.findOne({email: req.body.email});
+    if(!user)  
+    {return res.status(400).send("This email is not registred");
+  }
     
-//   const secret  = JWT_SECRET + user.password;
+  const secret  = JWT_SECRET + user.password;
+  const payload = {
+      email:user.email,
+      id: user._id
+  }
+  const token = jwt.sign(payload,secret,{expiresIn:'15m'})
+  const link  = 'http://localhost:3000/reset-password/${user._id}/${token}'
+  console.log(link);
+  res.send("Password reset link has been sent to ur email...")
 
-//   })
+  })
 
-//   router.get('/forgot-password',(req,res,next) =>
-//   {
-//       res.render('forgot-password');
-//   })
+  router.get('/forgot-password',(req,res,next) =>
+  {
+      res.render('forgot-password');
+  })
 
-//   router.get('/reset-password',(req,res,next) =>
-//   {
+  router.get('/reset-password',(req,res,next) =>
+  {
       
-//   })
+  })
 
-//   router.get('/reset-password',(req,res,next) =>
-//   {
+  router.get('/reset-password',(req,res,next) =>
+  {
       
-//   })
+  })
 
     router.get("/logout",async(req,res)=>{
         // res.cookie('jwt','',{maxAge:1});
