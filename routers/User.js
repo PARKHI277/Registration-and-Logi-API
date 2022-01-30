@@ -153,7 +153,7 @@ router.get('/signup', (req,res) => {
     }
   })
   
-  const JWT_SECRET = 'secret';
+//   const JWT_SECRET = 'secret';
 //   //Forgot password router
 //   router.post('/forgot-password',(req,res,next) =>
 //   {
@@ -161,27 +161,25 @@ router.get('/signup', (req,res) => {
 //     if(!user)  
 //     {return res.status(400).send("This email is not registred");
 //   }
-//   else
-//   {
-//       // creating one time link
-//   }
+    
+//   const secret  = JWT_SECRET + user.password;
 
 //   })
 
-  router.get('/forgot-password',(req,res,next) =>
-  {
-      res.render('forgot-password');
-  })
+//   router.get('/forgot-password',(req,res,next) =>
+//   {
+//       res.render('forgot-password');
+//   })
 
-  router.get('/reset-password',(req,res,next) =>
-  {
+//   router.get('/reset-password',(req,res,next) =>
+//   {
       
-  })
+//   })
 
-  router.get('/reset-password',(req,res,next) =>
-  {
+//   router.get('/reset-password',(req,res,next) =>
+//   {
       
-  })
+//   })
 
     router.get("/logout",async(req,res)=>{
         // res.cookie('jwt','',{maxAge:1});
