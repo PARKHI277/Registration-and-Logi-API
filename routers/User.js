@@ -24,6 +24,10 @@ router.use(cookieparser());
 //     });
 // }
 
+router.get('/',(req,res) => {
+    res.send("API is working properley");
+})
+
  router.post("/register",async(req,res)=>
 {      
     //check email exixt
@@ -58,9 +62,9 @@ router.use(cookieparser());
          password:plainpassword,
         //  token:token
         });
-   }).catch((e)=>{
-       res.status(400).send(e);
-   })
+   }).catch((err)=>{
+    res.status(400).send(err);
+})
 }
 else
 {
@@ -148,8 +152,36 @@ router.get('/signup', (req,res) => {
        res.status(400).send("Invalid otp")
     }
   })
+  
+  const JWT_SECRET = 'secret';
+//   //Forgot password router
+//   router.post('/forgot-password',(req,res,next) =>
+//   {
+//     const user = await User.findOne({email: req.body.email});
+//     if(!user)  
+//     {return res.status(400).send("This email is not registred");
+//   }
+//   else
+//   {
+//       // creating one time link
+//   }
 
-  //Forgot password rout
+//   })
+
+  router.get('/forgot-password',(req,res,next) =>
+  {
+      res.render('forgot-password');
+  })
+
+  router.get('/reset-password',(req,res,next) =>
+  {
+      
+  })
+
+  router.get('/reset-password',(req,res,next) =>
+  {
+      
+  })
 
     router.get("/logout",async(req,res)=>{
         // res.cookie('jwt','',{maxAge:1});
