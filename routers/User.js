@@ -55,7 +55,7 @@ router.post("/register",async(req,res)=>
     const token = createtoken(user._id);
     //adding cookie
     res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});*/
-    console.log(user.otpuser);
+   
     console.log(otp);
     user.save().then(()=>
     {  
@@ -77,46 +77,46 @@ else
 });
 
 router.post('/otp-send',async(req,res,next) =>
-{    
-    const userexixt = await User.findOne({email: req.body.email});
-    
-    if(userexixt){
-    try{    
-        console.log(userexixt.otpuser)
-           const transporter = nodemailer.createTransport({
-                 service:"gmail",
-                 auth:{
-                     user : "codechef277@gmail.com",
-                     pass:"Apiuser@1234"
-                 }
-             });
-             const mailOptions = {
-                 from:"codechef277@gmail.com",
-                 to:userexixt.email,
-                 subject:"Your otp for verification",
-                 text: userexixt.otpuser
-             };
-             transporter.sendMail(mailOptions,function(error,info){
-                 if(error)
-                 {
-                     console.log(error);
-                 }
-                 else
-                 {
-                     console.log("Otp sent to your entered email");
-                 }
-            })
-             res.status(201).send("otp has been sent to your email")
-            }catch(err)
-            {
-                res.status(400).send("Something went wrong");
-            }
-    }
-    else
-    {
-        res.send("Please enter valid email id")
-    }
- })
+  {    
+      const userexixt = await User.findOne({email: req.body.email});
+      
+      if(userexixt.otpuser){
+      try{    
+              console.log(userexixt.otpuser)
+             const transporter = nodemailer.createTransport({
+                   service:"gmail",
+                   auth:{
+                       user : "codechef277@gmail.com",
+                       pass:"Apiuser@1234"
+                   }
+               });
+               const mailOptions = {
+                   from:"codechef277@gmail.com",
+                   to:userexixt.email,
+                   subject:"Your otp for verification",
+                   text: userexixt.otpuser
+               };
+               transporter.sendMail(mailOptions,function(error,info){
+                   if(error)
+                   {
+                       console.log(error);
+                   }
+                   else
+                   {
+                       console.log("Otp sent to your entered email");
+                   }
+              })
+               res.status(201).send("otp has been sent to your email")
+              }catch(err)
+              {
+                  res.status(400).send("Something went wrong");
+              }
+      }
+      else
+      {
+          res.send("Please enter valid email id")
+      }
+   })
 
 
 router.post("/login",async(req,res) => {
@@ -260,7 +260,7 @@ router.get('/verify', (req, res) => {
   })*/
 
 
-
+  
   
 
 module.exports = router;
