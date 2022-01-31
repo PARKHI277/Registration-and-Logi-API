@@ -13,7 +13,6 @@ const nodemailer = require('nodemailer');
 //middeleware
 router.use(cookieparser());
 /*jwt
-
 const maxAge = 3*24*60*60;
 const createtoken = (id) => {
     return jwt.sign({id},'secret',{
