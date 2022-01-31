@@ -41,16 +41,16 @@ const UserSchema = new mongoose.Schema({
         lowercase:true
 
     },
-    // year:{
-    //     type:Number,
-    //     required:true,
-    //     min:1,
-    //     max:2
-    // },
-    // branch:{
-    //     type:String,
-    //     required:true
-    // },
+    year:{
+        type:Number,
+        required:true,
+        min:1,
+        max:2
+    },
+    branch:{
+        type:String,
+        required:true
+    },
     gen:{
         type:String,
         required:true

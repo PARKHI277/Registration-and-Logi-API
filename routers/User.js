@@ -5,7 +5,7 @@ const router = new express.Router();
 const User = require("../src/models/Users");
 const jwt = require('jsonwebtoken');
 const {auth}= require('../routers/verifytoken');
-const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
+// const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
 const cookieparser = require("cookie-parser");
 const nodemailer = require('nodemailer');
 
@@ -47,8 +47,8 @@ router.post("/register",async(req,res)=>
         password:hashPassword,
         address:req.body.address,
         phone:req.body.phone,
-        // year:req.body.year,
-        // branch:req.body.branch,
+        year:req.body.year,
+        branch:req.body.branch,
         gen:req.body.gen,
         isverified:false,
         plainpassword:userpassword,

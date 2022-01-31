@@ -4,7 +4,7 @@ const cors = require('cors');
 require("./src/db/conn");
 const UserRouter = require("./routers/User")
 
-const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
+// const client = require('twilio')(process.env.TWILIO_ACCOUNT_SID,process.env.TWILIO_AUTH_TOKEN);
 
 const app = express();
 app.use(express.json());
