@@ -12,13 +12,13 @@ const nodemailer = require('nodemailer');
 
 //middeleware
 router.use(cookieparser());
-//jwt
- const maxAge = 3*24*60*60;
-const createtoken = (id) => {
-    return jwt.sign({id},'secret',{         
-        expiresIn:maxAge
-  });
-}
+// //jwt
+//  const maxAge = 3*24*60*60;
+// const createtoken = (id) => {
+//     return jwt.sign({id},'secret',{         
+//         expiresIn:maxAge
+//   });
+// }
 
 router.get('/',(req,res) => {
     res.send("API is working properley");
@@ -125,12 +125,12 @@ router.post("/login",async(req,res) => {
     //password is correct
    
     const validpass = await bcrypt.compare(req.body.password,user.password);
-    const maxAge = 3*24*60*60;
-    const token = await user.generateAuthToken();
-    res.cookie('jwt',token,
-    {httpOnly:true,
-       exprires:maxAge,
-    });
+    // const maxAge = 3*24*60*60;
+    // const token = await user.generateAuthToken();
+    // res.cookie('jwt',token,
+    // {httpOnly:true,
+    //    exprires:maxAge,
+    // });
     if(!validpass)
     {
      return res.status(400).send('wrong password');
@@ -139,8 +139,8 @@ router.post("/login",async(req,res) => {
     else
     { 
          res.send("Login sucess");    
-        //  res.status(200).send({user:user._id});
-         return res.status(201).send(token);
+         res.status(200).send({user:user._id});
+        //  return res.status(201).send(token);
     }
 })
 
