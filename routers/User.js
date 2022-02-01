@@ -80,7 +80,7 @@ router.post('/otp-send',async(req,res,next) =>
   {    
       const userexixt = await User.findOne({email: req.body.email});
       
-      if(userexixt.otpuser){
+      if(userexixt){
       try{    
               console.log(userexixt.otpuser)
              const transporter = nodemailer.createTransport({
