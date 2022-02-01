@@ -12,13 +12,13 @@ const nodemailer = require('nodemailer');
 
 //middeleware
 router.use(cookieparser());
-/*jwt
-const maxAge = 3*24*60*60;
+//jwt
+ const maxAge = 3*24*60*60;
 const createtoken = (id) => {
-    return jwt.sign({id},'secret',{
+    return jwt.sign({id},'secret',{         
         expiresIn:maxAge
-    });
-}*/
+  });
+}
 
 router.get('/',(req,res) => {
     res.send("API is working properley");
@@ -123,17 +123,24 @@ router.post("/login",async(req,res) => {
     const user = await User.findOne({email: req.body.email});
     if(!user) return res.status(400).send("This email is not registred");
     //password is correct
+   
     const validpass = await bcrypt.compare(req.body.password,user.password);
+    const maxAge = 3*24*60*60;
+    const token = await user.generateAuthToken();
+    res.cookie('jwt',token,
+    {httpOnly:true,
+       exprires:maxAge,
+    });
     if(!validpass)
     {
      return res.status(400).send('wrong password');
     }
+   
     else
     { 
          res.send("Login sucess");    
-         /*const token = createtoken(user._id);
-         res.cookie('jwtg',token,{httpOnly:true,maxAge:maxAge*1000});*/
-         res.status(200).send({user:user._id});
+        //  res.status(200).send({user:user._id});
+         return res.status(201).send(token);
     }
 })
 
