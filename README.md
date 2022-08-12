@@ -2,6 +2,12 @@
 
 Deployed on heroku : https://nameless-citadel-14148.herokuapp.com/
 
+## 1. Register User
+
+METHOD: POST , REQUEST FORMAT: JSON , URL: /api/users/register
+
+FORMAT :
+
 ## Format:
 
 ```javascript
@@ -44,4 +50,36 @@ Deployed on heroku : https://nameless-citadel-14148.herokuapp.com/
     "phone": 7668043605,
     "rollno": 2000270110065
 }
+```
+
+- Otp sent to user email address.
+
+## 2. Login User
+
+METHOD: POST , REQUEST FORMAT: JSON , URL: /api/users/Login
+
+## Format :
+
+```javascript
+{
+ "email":"String",
+ "password":"String"
+}
+```
+
+## Example :
+
+```javascript
+{
+    "email":"parkhi2011103@gmail.com",
+    "password":"Parkhi@1357"
+}
+
+```
+
+## Response:
+
+```javascript
+Login sucess
+
 ```
