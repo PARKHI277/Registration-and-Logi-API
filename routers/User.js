@@ -83,7 +83,7 @@ router.post("/otp-send", async (req, res, next) => {
         service: "gmail",
         auth: {
           user: "testapi277@gmail.com",
-          pass: "ApiUser@1234",
+          pass: process.env.pass,
         },
       });
       const mailOptions = {
