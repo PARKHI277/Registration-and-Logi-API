@@ -80,6 +80,64 @@ METHOD: POST , REQUEST FORMAT: JSON , URL: /api/users/Login
 ## Response:
 
 ```javascript
-Login sucess
+Login success
+
+```
+
+## 3. OTP Send on Registred email for verification
+
+METHOD: POST , REQUEST FORMAT: JSON , URL: /api/users/otp-Send
+
+## Format :
+
+```javascript
+{
+    "email":"String"
+}
+
+```
+
+## Example :
+
+```javascript
+{
+    "email": "parkhigarg277@gmail.com"
+}
+
+```
+
+## Response:
+
+```javascript
+otp has been sent to your email
+
+```
+
+## 4. Forgot password
+
+METHOD: POST , REQUEST FORMAT: JSON , URL: /api/users/forgot-password
+
+## Format :
+
+```javascript
+{
+    "email":"String"
+}
+
+```
+
+## Example :
+
+```javascript
+{
+    "email": "parkhigarg277@gmail.com"
+}
+
+```
+
+## Response:
+
+```javascript
+Password has been sent to ur email...
 
 ```
